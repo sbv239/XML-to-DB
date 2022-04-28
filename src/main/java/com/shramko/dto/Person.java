@@ -1,4 +1,4 @@
-package com.shramko.domain;
+package com.shramko.dto;
 
 import lombok.Data;
 

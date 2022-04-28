@@ -1,13 +1,18 @@
 package com.shramko;
 
-import com.shramko.service.Reader;
-import com.shramko.service.impl.XmlReader;
+import com.shramko.service.Runner;
+import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
+
+@Slf4j
 public class App {
-
     public static void main(String[] args) {
-        String path = "src/main/resources/persons.xml";
-        Reader reader = new XmlReader();
-        reader.read(path);
+        Runner runner = new Runner();
+        try {
+            runner.run(args);
+        } catch (IOException e) {
+            log.info(e.getMessage());
+        }
     }
 }

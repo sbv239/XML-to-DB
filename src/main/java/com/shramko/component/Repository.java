@@ -1,20 +1,24 @@
 package com.shramko.component;
 
-import com.shramko.domain.Person;
+import com.shramko.dto.Person;
+import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
 
+@Slf4j
 public class Repository {
 
-    private static Repository repository = new Repository();
+    private static final Repository REPOSITORY = new Repository();
 
-    private static final String CHECK_UID_SQL = "SELECT * FROM person WHERE uid=?";
-    private static final String INSERT_PERSON_SQL = "INSERT INTO person (uid, name, surname, salary) VALUES (?, ?, ?, ?)";
+    private static final String CHECK_UID_SQL =
+            "SELECT * FROM person WHERE uid=?";
+    private static final String INSERT_PERSON_SQL =
+            "INSERT INTO person (uid, name, surname, salary) VALUES (?, ?, ?, ?)";
 
     private int correctData;
 
     public static Repository getRepository() {
-        return repository;
+        return REPOSITORY;
     }
 
     private Repository() {
@@ -43,7 +47,7 @@ public class Repository {
             selectStatement.setInt(1, person.getUid());
             ResultSet resultSet = selectStatement.executeQuery();
             if (resultSet.next()) {
-                System.out.println("Person with uid " + person.getUid() + " already exists");
+                log.info("Person with uid " + person.getUid() + " already exists");
                 return true;
             }
         }

@@ -11,7 +11,7 @@ public class XmlReaderTest {
 
     @Before
     public void setUp() {
-        reader = new XmlReader();
+        reader = XmlReader.getReader();
     }
 
     @Test

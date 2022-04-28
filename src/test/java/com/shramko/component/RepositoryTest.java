@@ -1,6 +1,6 @@
 package com.shramko.component;
 
-import com.shramko.domain.Person;
+import com.shramko.dto.Person;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

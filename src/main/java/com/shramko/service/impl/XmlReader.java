@@ -1,7 +1,7 @@
 package com.shramko.service.impl;
 
 import com.shramko.component.Repository;
-import com.shramko.domain.Person;
+import com.shramko.dto.Person;
 import com.shramko.service.Reader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,11 +17,19 @@ import java.io.FileNotFoundException;
 @Slf4j
 public class XmlReader implements Reader {
 
-    private static final Repository repository = Repository.getRepository();
+    private final static XmlReader reader = new XmlReader();
+    private final Repository repository = Repository.getRepository();
     private final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
 
     private int data;
     private int correctData;
+
+    private XmlReader() {
+    }
+
+    public static XmlReader getReader() {
+        return reader;
+    }
 
     @Override
     public void read(String path) {
