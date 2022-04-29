@@ -24,6 +24,6 @@ public class Runner {
         }
 
         // Use "src/main/resources/persons.xml" instead of files[0] to test prepared file from IDE
-        reader.read("src/main/resources/persons.xml");
+        reader.read(files[0]);
     }
 }

@@ -82,7 +82,7 @@ public class XmlReader implements Reader {
         if (nextEvent.isEndElement()) {
             EndElement endElement = nextEvent.asEndElement();
             if (endElement.getName().getLocalPart().equals("person") && isValid(person)) {
-                repository.insertPerson(person);
+                repository.insert(person);
             }
         }
     }
