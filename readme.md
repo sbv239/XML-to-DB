@@ -9,6 +9,8 @@ DB: PostgreSQL
 
 DB properties: datasource.properties
 
+To test program from your IDE directly you should turn (in DataSource class) location of datasource.properties file to "src/main/resources/datasource.properties"
+
 ---
 
 Compile: _`mvn clean compile assembly:single`_
