@@ -2,6 +2,7 @@ package com.shramko.service.impl;
 
 import com.shramko.component.Repository;
 import com.shramko.dto.Person;
+import com.shramko.exception.XmlParserServiceException;
 import com.shramko.service.Reader;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,7 +35,7 @@ public class XmlReader implements Reader {
             logResult();
             xmlEventReader.close();
         } catch (XMLStreamException | FileNotFoundException e) {
-            e.printStackTrace();
+            throw new XmlParserServiceException("");
         }
     }
 
