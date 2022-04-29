@@ -17,63 +17,54 @@ import java.io.FileNotFoundException;
 @Slf4j
 public class XmlReader implements Reader {
 
-    private final static XmlReader reader = new XmlReader();
-    private final Repository repository = Repository.getRepository();
     private final XMLInputFactory xmlInputFactory = XMLInputFactory.newInstance();
+    private final Repository repository;
 
     private int data;
-    private int correctData;
 
-    private XmlReader() {
-    }
-
-    public static XmlReader getReader() {
-        return reader;
+    public XmlReader(Repository repository) {
+        this.repository = repository;
     }
 
     @Override
     public void read(String path) {
         try {
-            XMLEventReader reader = xmlInputFactory.createXMLEventReader(new FileInputStream(path));
-            Person person = new Person();
-            readByElement(reader, person);
+            XMLEventReader xmlEventReader = xmlInputFactory.createXMLEventReader(new FileInputStream(path));
+            readByElement(xmlEventReader);
+            logResult();
+            xmlEventReader.close();
         } catch (XMLStreamException | FileNotFoundException e) {
             e.printStackTrace();
         }
-        correctData = repository.getCorrectData();
-        log.info("Data processed: " + data + "/" + correctData);
     }
 
-    private void readByElement(XMLEventReader reader, Person person) throws XMLStreamException {
+    private void readByElement(XMLEventReader reader) throws XMLStreamException {
+        Person person = new Person();
         while (reader.hasNext()) {
             XMLEvent nextEvent = reader.nextEvent();
             if (nextEvent.isStartElement()) {
                 StartElement startElement = nextEvent.asStartElement();
                 String localPart = startElement.getName().getLocalPart();
+                if (localPart.equals("person")) {
+                    person = new Person();
+                    data++;
+                }
                 switch (localPart) {
-                    case "person":
-                        person = new Person();
-                        data++;
-                        break;
                     case "uid":
                         nextEvent = reader.nextEvent();
-                        if (isDataEmpty(nextEvent)) break;
-                        person.setUid(Integer.parseInt(nextEvent.asCharacters().getData()));
+                        person.setUid(isDataEmpty(nextEvent) ? null : Integer.parseInt(nextEvent.asCharacters().getData()));
                         break;
                     case "first_name":
                         nextEvent = reader.nextEvent();
-                        if (isDataEmpty(nextEvent)) break;
-                        person.setFirstname(nextEvent.asCharacters().getData());
+                        person.setFirstname(isDataEmpty(nextEvent) ? null : nextEvent.asCharacters().getData());
                         break;
                     case "last_name":
                         nextEvent = reader.nextEvent();
-                        if (isDataEmpty(nextEvent)) break;
-                        person.setSurname(nextEvent.asCharacters().getData());
+                        person.setSurname(isDataEmpty(nextEvent) ? null : nextEvent.asCharacters().getData());
                         break;
                     case "salary":
                         nextEvent = reader.nextEvent();
-                        if (isDataEmpty(nextEvent)) break;
-                        person.setSalary(Integer.parseInt(nextEvent.asCharacters().getData()));
+                        person.setSalary(isDataEmpty(nextEvent) ? null : Integer.parseInt(nextEvent.asCharacters().getData()));
                         break;
                     default:
                         break;
@@ -84,26 +75,33 @@ public class XmlReader implements Reader {
     }
 
     private boolean isDataEmpty(XMLEvent nextEvent) {
-        if (nextEvent.toString().startsWith("</")) {
-            return true;
-        }
-        return false;
+        return nextEvent.toString().startsWith("</");
     }
 
     private void savePerson(Person person, XMLEvent nextEvent) {
         if (nextEvent.isEndElement()) {
             EndElement endElement = nextEvent.asEndElement();
-            if (endElement.getName().getLocalPart().equals("person") && person.isValid()) {
+            if (endElement.getName().getLocalPart().equals("person") && isValid(person)) {
                 repository.insertPerson(person);
             }
         }
     }
 
-    public int getData() {
-        return data;
+    private boolean isValid(Person person) {
+        if (person.getFirstname() == null || person.getFirstname().equals("")) {
+            return false;
+        }
+        if (person.getSurname() == null || person.getSurname().equals("")) {
+            return false;
+        }
+        return person.getSalary() != null && person.getUid() != null;
     }
 
-    public int getCorrectData() {
-        return correctData;
+    private void logResult() {
+        log.info("Data processed: " + data + "/" + repository.getCorrectData());
+    }
+
+    public int getData() {
+        return data;
     }
 }

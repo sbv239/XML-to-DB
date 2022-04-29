@@ -6,6 +6,9 @@ DB: PostgreSQL
 - DB-name: Test
 - DB-user: "postgres"
 - DB-password: "postgres"
+
+DB properties: datasource.properties
+
 ---
 
 Compile: _`mvn clean compile assembly:single`_
@@ -16,7 +19,7 @@ Execution: `java -jar xml-parser.jar persons.xml`
 
 #### Description
 
-- Parser reads only the first file in the args and only if it is a xml
+- Parser reads only one file in the args and only if it is a xml
 - If there is any null field in <person> than no DB insert will be provided
-- Duplicates checked by UID
+- Duplicates checked by UID. It should be unique
 

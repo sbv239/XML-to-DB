@@ -1,6 +1,7 @@
 package com.shramko.component;
 
 import com.shramko.dto.Person;
+import com.shramko.exception.XmlParserComponentException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.*;
@@ -25,9 +26,9 @@ public class Repository {
     }
 
     public boolean insertPerson(Person person) {
-        try (Connection connection = DataSource.getConnection()) {
+        try (Connection connection = DataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_PERSON_SQL)) {
             if (!isPersonExist(person, connection)) {
-                PreparedStatement statement = connection.prepareStatement(INSERT_PERSON_SQL);
                 statement.setInt(1, person.getUid());
                 statement.setString(2, person.getFirstname());
                 statement.setString(3, person.getSurname());
@@ -37,7 +38,7 @@ public class Repository {
                 return true;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new XmlParserComponentException(e.getMessage());
         }
         return false;
     }
@@ -47,7 +48,7 @@ public class Repository {
             selectStatement.setInt(1, person.getUid());
             ResultSet resultSet = selectStatement.executeQuery();
             if (resultSet.next()) {
-                log.info("Person with uid " + person.getUid() + " already exists");
+                log.warn("Person with uid " + person.getUid() + " already exists");
                 return true;
             }
         }

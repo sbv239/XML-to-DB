@@ -14,6 +14,7 @@ public class RepositoryTest {
     public void setUp() {
         repository = Repository.getRepository();
         person = new Person(590342911, "Boris", "Gershin", 43900);
+        repository.insertPerson(person);
     }
     @Test
     public void insertExistingPersonTest() {

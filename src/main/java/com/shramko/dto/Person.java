@@ -18,20 +18,4 @@ public class Person {
 
     public Person() {
     }
-
-    public boolean isValid() {
-        if (uid == null) {
-            return false;
-        }
-        if (firstname == null || firstname.equals("")) {
-            return false;
-        }
-        if (surname == null || surname.equals("")) {
-            return false;
-        }
-        if (salary == null) {
-            return false;
-        }
-        return true;
-    }
 }
